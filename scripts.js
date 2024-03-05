@@ -1,7 +1,7 @@
 
 const $ = (id) => document.getElementById(id);
 // create a new array;
-const massageData = [];
+const messageData = [];
 
 const fetchCatagoris = async(categoryName) => {
   const loadSpnner =`<section class="flex justify-center items-center">
@@ -22,6 +22,7 @@ const fetchCatagoris = async(categoryName) => {
     cardContainer.innerHTML=null;
     messageReadSec.className = messageReadSec.className.replace('hidden', '');
     data.posts.forEach((items)=>{
+      console.log('scripts[25]: ', items);
       const addMessage = () => {
         console.log('ckick add messagtfe')
       }
@@ -65,7 +66,7 @@ const fetchCatagoris = async(categoryName) => {
                   </div>
               </div>
           </div>
-          <button class="btn btn-circle ml-40 message-button">
+          <button data-title="${items.title}" data-view-count="${items.view_count}" class="btn btn-circle ml-40 message-button">
           <img class="w-8 h-8" src="./images/svg-sms.svg" alt="">
           </button>
               </div> 
@@ -78,6 +79,36 @@ const fetchCatagoris = async(categoryName) => {
         `
         cardContainer.appendChild(div)
     })
+
+  const messageButtons = document.getElementsByClassName('message-button');
+  // Render message item
+  const renderMessage = (data) => {
+    const item = document.createElement('div');
+    item.innerHTML = `
+    <div class="mt-4 bg-white rounded-xl p-2 flex gap-8">
+        <p>${data.title}</p>
+        <div class="flex gap-2">
+          <div><img src="./images/eye.png" alt=""></div>
+        <div>${data.viewCount}</div>
+      </div>
+    </div>
+    `
+    document.getElementById('message-container').appendChild(item)
+  }
+  // Loop through each item
+  for (let i = 0; i < messageButtons.length; i++) {
+    messageButtons[i].addEventListener('click', ()=> {
+      const item = { title: messageButtons[i].getAttribute('data-title'), viewCount: messageButtons[i].getAttribute('data-view-count') };
+      messageData.push(item)
+      console.log('messageData: ', messageData);
+      // render message
+      renderMessage(item);
+      // message count view
+      const messageCountView = $('view-count-span');
+      messageCountView.innerText = `(${messageData.length})`
+    })
+  }
+
 }
 fetchCatagoris()
 
